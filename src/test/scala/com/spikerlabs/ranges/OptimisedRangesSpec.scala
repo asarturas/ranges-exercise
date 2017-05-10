@@ -55,4 +55,26 @@ class OptimisedRangesSpec extends FlatSpec with Matchers {
     ranges.countAt(12.0) should be(1)
     ranges.countAt(33.0) should be(1)
   }
+  it should "be quicker than sample ranges" in { // anything bigger is too slow for a test
+    val random = scala.util.Random.shuffle(List.range(0, 2000).map(_.toDouble)).sliding(2).collect {
+      case List(x, y) if x > y => (x, y)
+      case List(x, y) => (x, y)
+    }.toList
+    // sample
+    val sampleStart = System.nanoTime()
+    val sampleRanges = SampleRanges(random)
+    for {
+      search <- 0 to 20000
+    } yield sampleRanges.countAt(search.toDouble)
+    val sampleTime = System.nanoTime() - sampleStart
+    // optimised
+    val optimisedStart = System.nanoTime()
+    val optimisedRanges = OptimisedRanges(random)
+    for {
+      search <- 0 to 20000
+    } yield optimisedRanges.countAt(search.toDouble)
+    val optimisedTime = System.nanoTime() - optimisedStart
+    // comparison
+    optimisedTime < sampleTime should be(true)
+  }
 }
