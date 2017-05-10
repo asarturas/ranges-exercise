@@ -1,6 +1,6 @@
 package com.spikerlabs.ranges
 
-import scala.collection.mutable.SortedMap
+import scala.collection.immutable.SortedMap
 
 trait Ranges {
   def countAt(num: Double): Int
