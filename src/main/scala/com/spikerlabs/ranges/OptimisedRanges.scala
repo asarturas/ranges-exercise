@@ -10,9 +10,7 @@ object Point {
 
 case class OptimisedRanges private(r: SortedMap[Double, Point]) extends Ranges {
   def countAt(num: Double): Int = {
-    r.takeWhile {
-      case (key, _) => key <= num
-    }.lastOption.map {
+    r.to(num).lastOption.map {
       case (_, point) => point.count
     }.getOrElse(0)
   }
